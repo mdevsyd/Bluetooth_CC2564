@@ -5,4 +5,8 @@
     <string name="button_scan">scan_btn</string>
     <string name="no_paired_devices">No paired devices found</string>
     <string name="no_discovered_device">No devices discovered</string>
+    <string name="device_detail">device clicked:</string>
+    <string name="discovery_error">An error has occurred whilst trying to make your device discoverable</string>
+    <string name="connectable">Host device is in discoverable mode.</string>
+    <string name="connectable_discoverable">Host device is not in discoverable mode but can still receive connections.</string>
 </resources>
