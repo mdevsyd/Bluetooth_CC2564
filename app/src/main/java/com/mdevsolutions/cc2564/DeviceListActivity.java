@@ -70,9 +70,24 @@ public class DeviceListActivity extends AppCompatActivity {
         filter = new IntentFilter((BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
         this.registerReceiver(mReceiver,filter);
 
+        createDiscoverabilityFilter();
+
         getPairedDevices();
 
 
+    }
+
+    /**
+     * Create filter and register to receive notification of discoverabilty changes
+     * (from http://stackoverflow.com/questions/30222409/android-broadcast-receiver-bluetooth-
+     * events-catching/30292660#30292660)
+     */
+    private void createDiscoverabilityFilter() {
+        IntentFilter discoverabilityFilter = new IntentFilter();
+        discoverabilityFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        discoverabilityFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        discoverabilityFilter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(mReceiver2, discoverabilityFilter);
     }
 
     private Set<BluetoothDevice> getPairedDevices() {
@@ -192,19 +207,33 @@ public class DeviceListActivity extends AppCompatActivity {
                         enableBt();
                     }
                     break;
-                case BluetoothAdapter.ACTION_SCAN_MODE_CHANGED:
-                    int scanMode = intent.getParcelableExtra(BluetoothAdapter.EXTRA_SCAN_MODE);
-                    switch (scanMode){
-                        case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
-                            Toast.makeText(DeviceListActivity.this,R.string.connectable, Toast.LENGTH_SHORT).show();
-                            break;
-                        case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
-                            Toast.makeText(DeviceListActivity.this,R.string.connectable_discoverable, Toast.LENGTH_SHORT).show();
-                            break;
-                        case BluetoothAdapter.SCAN_MODE_NONE:
-                            Toast.makeText(DeviceListActivity.this,R.string.discovery_error, Toast.LENGTH_SHORT).show();
-                            break;
-                    }
+            }
+        }
+    };
+
+    private BroadcastReceiver mReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if(action.equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)){
+                //int previous = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_SCAN_MODE, BluetoothAdapter.ERROR);
+                Log.d(Constants.DEBUG_TAG, "ScanMode has changed! ");
+                int scanMode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
+                switch (scanMode){
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
+                        Log.d(Constants.DEBUG_TAG, "scanMode: CONNECTABLE");
+                        Toast.makeText(DeviceListActivity.this,R.string.connectable, Toast.LENGTH_SHORT).show();
+                        break;
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                        Log.d(Constants.DEBUG_TAG, "scanMode: CONNECTABLE_DISCOVERABLE");
+                        Toast.makeText(DeviceListActivity.this,R.string.connectable_discoverable, Toast.LENGTH_SHORT).show();
+                        break;
+                    case BluetoothAdapter.SCAN_MODE_NONE:
+                        Log.d(Constants.DEBUG_TAG, "scanMode: NONE");
+                        Toast.makeText(DeviceListActivity.this,R.string.discovery_error, Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         }
     };
@@ -235,6 +264,7 @@ public class DeviceListActivity extends AppCompatActivity {
         }
         //unregister listeners to the broadcasts
         this.unregisterReceiver(mReceiver);
+        this.unregisterReceiver(mReceiver2);
     }
 
     @Override
@@ -253,8 +283,9 @@ public class DeviceListActivity extends AppCompatActivity {
             case Constants.REQUEST_HOST_DISCOVERABILITY:
                 if (resultCode == RESULT_CANCELED){
                     Toast.makeText(DeviceListActivity.this, R.string.discovery_error, Toast.LENGTH_SHORT).show();
-
                 }
+                break;
+
         }
     }
 }
