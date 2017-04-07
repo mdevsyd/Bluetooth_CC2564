@@ -27,7 +27,6 @@ public class DeviceListActivity extends AppCompatActivity {
     private ArrayAdapter mNewDevicesArrayAdapter;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(Constants.DEBUG_TAG,"DeviceListActivity onCreate()");
@@ -147,22 +146,33 @@ public class DeviceListActivity extends AppCompatActivity {
 
             // MAC hardware address of the device is the last 17 chars of the view
             String info = ((TextView) view).getText().toString();
-            String address = info.substring(info.length()-17);
-            String name = info.substring(0, info.length()-17);
-            Log.d(Constants.DEBUG_TAG, "item was clicked " + address);
 
-            Toast.makeText(DeviceListActivity.this, name+", "+address,Toast.LENGTH_SHORT).show();
+            if(info.length() >= 17){
+                String address = info.substring(info.length()-17);
+                String name = info.substring(0, info.length()-17);
+                Log.d(Constants.DEBUG_TAG, "item was clicked " + address);
 
-            //enable local device discoverability
-            enableHostDiscoverability();
+                Toast.makeText(DeviceListActivity.this, name+", "+address,Toast.LENGTH_SHORT).show();
 
-            //create intent including the hardware address
+                //enable local device discoverability - only necessary when connecting two android devices
+                //enableHostDiscoverability();
 
-//            Intent viewDeviceIntent = new Intent(DeviceListActivity.this, SelectedDeviceActivity.class);
+                //create intent including the hardware address
+                Intent commsInent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
+                commsInent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
+                //set Result, end this activity and start BTDataTransferActivity
+                setResult(RESULT_OK, commsInent);
+                startActivity(commsInent);
+            }
+            else {
+                setResult(RESULT_CANCELED);
+            }
+            finish();
+//            Intent viewDeviceIntent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
 //            viewDeviceIntent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
 //            viewDeviceIntent.putExtra(Constants.EXTRA_DEVICE_NAME, name);
 //            viewDeviceIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(viewDeviceIntent);
+//            //startActivity(viewDeviceIntent);
 
         }
     };
@@ -263,8 +273,13 @@ public class DeviceListActivity extends AppCompatActivity {
             mBtAdapter.cancelDiscovery();
         }
         //unregister listeners to the broadcasts
+        try{
         this.unregisterReceiver(mReceiver);
         this.unregisterReceiver(mReceiver2);
+        }
+        catch (IllegalArgumentException e){
+            Log.d(Constants.DEBUG_TAG, "Catch error: " + e);
+        }
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.mdevsolutions.cc2564;
 import java.util.UUID;
 
 /**
- * Created by Michi on 12/02/2017.
+ * Various project Constants
  */
 
 public class Constants {
@@ -13,6 +13,7 @@ public class Constants {
     public static final String LOCAL_DEVICE_NAME = "local_device_name";
     public static final UUID MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     public static final UUID SECURE_UUID = UUID.fromString("1f940d0e-017e-11e7-93ae-92361f002671");
+    public static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 
     public static final String DEBUG_TAG = "debug";
@@ -28,4 +29,6 @@ public class Constants {
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
+
+
 }
