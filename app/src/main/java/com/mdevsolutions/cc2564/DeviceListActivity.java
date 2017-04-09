@@ -158,16 +158,19 @@ public class DeviceListActivity extends AppCompatActivity {
                 //enableHostDiscoverability();
 
                 //create intent including the hardware address
-                Intent commsInent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
-                commsInent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
+                Intent commsIntent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
+                commsIntent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
+                commsIntent.putExtra(Constants.EXTRA_DEVICE_NAME, name);
                 //set Result, end this activity and start BTDataTransferActivity
-                setResult(RESULT_OK, commsInent);
-                startActivity(commsInent);
+                setResult(RESULT_OK, commsIntent);
+                startActivity(commsIntent);
+                commsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
             }
             else {
                 setResult(RESULT_CANCELED);
             }
-            finish();
+
 //            Intent viewDeviceIntent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
 //            viewDeviceIntent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
 //            viewDeviceIntent.putExtra(Constants.EXTRA_DEVICE_NAME, name);
@@ -252,7 +255,15 @@ public class DeviceListActivity extends AppCompatActivity {
     protected void onPause() {
         Log.d(Constants.DEBUG_TAG, "DeviceListActivity,  onPause()");
         super.onPause();
-        unregisterReceiver(mReceiver);
+        //unregisterReceiver(mReceiver);
+        //unregister listeners to the broadcasts
+        try{
+            this.unregisterReceiver(mReceiver);
+            this.unregisterReceiver(mReceiver2);
+        }
+        catch (IllegalArgumentException e){
+            Log.d(Constants.DEBUG_TAG, "Catch error: " + e);
+        }
     }
 
     @Override

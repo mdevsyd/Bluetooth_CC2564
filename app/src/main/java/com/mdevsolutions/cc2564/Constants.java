@@ -14,12 +14,13 @@ public class Constants {
     public static final UUID MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     public static final UUID SECURE_UUID = UUID.fromString("1f940d0e-017e-11e7-93ae-92361f002671");
     public static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    public static final UUID MY_UUID = UUID.fromString("39156212-0469-453c-94ff-e593f509caca");
 
 
     public static final String DEBUG_TAG = "debug";
 
     public static final int REQUEST_ENABLE_BT = 100;
-    public static final int REQUEST_CONNECT_DEVICE_SECURE = 200;
+    public static final int REQUEST_CONNECT_DEVICE = 200;
     public static final int REQUEST_CONNECT_DEVICE_INSECURE = 300;
     public static final int REQUEST_HOST_DISCOVERABILITY = 400;
 
@@ -29,6 +30,11 @@ public class Constants {
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
+
+    //names received from the msg handler
+    public static final String TOAST = "toast";
+    public static final String DEVICE_NAME = "device_name";
+
 
 
 }
