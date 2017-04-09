@@ -1,13 +1,19 @@
 package com.mdevsolutions.cc2564;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -26,6 +32,8 @@ public class BTDataTransfer extends AppCompatActivity {
     private EditText mOutEditText;
     private Button mSendBtn;
 
+    private String mConnectedDeviceAddress = null;
+
     //TODO create the SPPService before un commenting the following line
     private static BluetoothSPPService mSPPService = null;
 
@@ -34,10 +42,15 @@ public class BTDataTransfer extends AppCompatActivity {
 
     //String buffer for outgoing messages
     private StringBuffer mOutStringBuffer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_array_view);
+
+        // Setup this activity's actionBar
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
         mOutEditText = (EditText) findViewById(R.id.textOutEt);
         mSendBtn = (Button) findViewById(R.id.sendBtn);
@@ -49,7 +62,51 @@ public class BTDataTransfer extends AppCompatActivity {
             Toast.makeText(BTDataTransfer.this, R.string.bt_unaavailble, Toast.LENGTH_LONG).show();
             finish();
         }
+
+        // Get the device name and address from the intent that intiitated this activity
+        Intent commsIntent = getIntent();
+        mConnectedDeviceAddress = commsIntent.getStringExtra(Constants.EXTRA_DEVICE_ADDRESS);
+        mConnectedDeviceName = commsIntent.getStringExtra(Constants.EXTRA_DEVICE_NAME);
         //TODO bring over all the BT testing if on etc to this activity.
+
+        // Create a local instance of SPPService
+        mSPPService = new BluetoothSPPService(this, mHandler, mDataView);
+
+        //TODO get rid of this - currently this method tests BT remote device connection
+        //testMethod();
+
+
+
+    }
+
+    private void testMethod() {
+        if (getConnectionState() == BluetoothSPPService.STATE_NONE) {
+            Toast.makeText(this, "test method = STATE_NONE", Toast.LENGTH_SHORT).show();
+            // Start the Bluetooth services
+            mSPPService.stop();
+            mSPPService.start();
+
+            // Get the BLuetoothDevice object
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mConnectedDeviceAddress);
+
+            // Connect to the BT device
+            mSPPService.connect(device);
+            Log.d(Constants.DEBUG_TAG,"testMethod connected to device: "+ mConnectedDeviceName+", "+ mConnectedDeviceAddress);
+
+
+            //Intent serverIntent = new Intent(this, DeviceListActivity.class);
+            //startActivityForResult(serverIntent, Constants.REQUEST_CONNECT_DEVICE);
+        } else {
+            if (getConnectionState() == BluetoothSPPService.STATE_CONNECTED) {
+                mSPPService.stop();
+                mSPPService.start();
+                Toast.makeText(this, "test method = STATE_CONNECTED", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "test method = STATE_CONNECTING", Toast.LENGTH_SHORT).show();
+            }
+
+        }
 
     }
 
@@ -63,7 +120,7 @@ public class BTDataTransfer extends AppCompatActivity {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, Constants.REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
-        } else if ( mSPPService == null) {
+        } else if (mSPPService == null) {
             setupView();
         }
     }
@@ -86,8 +143,11 @@ public class BTDataTransfer extends AppCompatActivity {
         if (mSPPService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mSPPService.getState() == BluetoothSPPService.STATE_NONE) {
-                // Start the Bluetooth chat services
+                Log.d(Constants.DEBUG_TAG," Starting SPP Service (onResume)");
+
+                //start SPP Service
                 mSPPService.start();
+
             }
         }
     }
@@ -96,7 +156,6 @@ public class BTDataTransfer extends AppCompatActivity {
         //initialise array adapter and set it to the listview
         mDataArrayAdapter = new ArrayAdapter<String>(this, R.layout.data_array_view);
         mDataView.setAdapter(mDataArrayAdapter);
-
         //Initialise the edit text and make a listener for when user hits the return key when finished typing text
         mOutEditText.setOnEditorActionListener(mWriteListener);
 
@@ -112,7 +171,10 @@ public class BTDataTransfer extends AppCompatActivity {
         });
 
         // Initialize the BluetoothSPPService to perform bluetooth connections
-        mSPPService = new BluetoothSPPService(this, mHandler);
+        mSPPService = new BluetoothSPPService(this, mHandler, mDataView);
+
+        // Initialise the buffer for outgoing messages
+        mOutStringBuffer = new StringBuffer("");
     }
 
     /**
@@ -123,12 +185,12 @@ public class BTDataTransfer extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch(msg.what){
+            switch (msg.what) {
                 case Constants.MESSAGE_STATE_CHANGE:
                     // Update the status by switching on arg1 --> state of BluetoothChatService
-                    switch(msg.arg1){
+                    switch (msg.arg1) {
                         case BluetoothSPPService.STATE_CONNECTED:
-                            setStatus(getString(R.string.title_connected)+" "+ mConnectedDeviceName);
+                            setStatus(getString(R.string.title_connected) + " " + mConnectedDeviceName);
                             //TODO if the getString doesn't work try getString(int, object)
                             mDataArrayAdapter.clear();
                             break;
@@ -152,9 +214,11 @@ public class BTDataTransfer extends AppCompatActivity {
                 case Constants.MESSAGE_READ:
                     byte[] readBuffer = (byte[]) msg.obj;
                     String readMeassege = new String(readBuffer);
-                    mDataArrayAdapter.add(mConnectedDeviceName +"Receive:  " + readMeassege);
+                    mDataArrayAdapter.add(mConnectedDeviceName + "Receive:  " + readMeassege);
                     break;
-
+                case Constants.MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), msg.getData().getString(Constants.TOAST), Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };
@@ -162,7 +226,7 @@ public class BTDataTransfer extends AppCompatActivity {
     /**
      * An action listener for the text out edit text. this listens for return key
      */
-    private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener(){
+    private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener() {
 
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -176,17 +240,19 @@ public class BTDataTransfer extends AppCompatActivity {
 
     /**
      * Sends a message from one device to the other
+     *
      * @param message - the String of text taken from user input
      */
     private void sendMessage(String message) {
+
         //Check we are connected to chat service, display toast if not connected to any device.
-//        if (mSPPService.getState() != BluetoothSPPService.STATE_CONNECTED){
-//            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_LONG).show();
-//            return;
-//        }
+        if (mSPPService.getState() != BluetoothSPPService.STATE_CONNECTED){
+            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_LONG).show();
+            return;
+        }
 
         //check the message is not empty
-        if (message.length() > 0){
+        if (message.length() > 0) {
             byte[] msgToSend = message.getBytes();
             mSPPService.write(msgToSend);
 
@@ -198,16 +264,71 @@ public class BTDataTransfer extends AppCompatActivity {
 
     /**
      * Updates the status on the action bar.
-     *
      */
-    private void setStatus(CharSequence charSeq){
-        final android.app.ActionBar actionBar = getActionBar();
+    private void setStatus(CharSequence charSeq) {
+        ActionBar actionBar = getSupportActionBar();
+        //final app.ActionBar actionBar = getSupportActionBar();
         //ensure there is an actionbar in the activity
-        if (null == actionBar){
+        if (null == actionBar) {
             return;
         }
-        actionBar.setSubtitle(charSeq);
+        actionBar.setTitle(charSeq);
+        //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        //myToolbar.setTitle(charSeq);
     }
 
+    public int getConnectionState() {
+        return mSPPService.getState();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+
+            case Constants.REQUEST_CONNECT_DEVICE:
+
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == RESULT_OK) {
+                    // Get the device MAC address
+                    String address = data.getExtras()
+                            .getString(Constants.EXTRA_DEVICE_ADDRESS);
+                    // Get the BLuetoothDevice object
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                    // Attempt to connect to the device
+                    mSPPService.connect(device);
+                }
+                break;
+
+            case Constants.REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode != RESULT_OK) {
+                    Log.d(Constants.DEBUG_TAG, "BT not enabled");
+
+                    // TODO an alert would be better here!
+                    finish();
+                }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.device_action_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle user selection from the overflow menu
+        switch (item.getItemId()){
+            case R.id.action_connect:
+                testMethod();
+                return true;
+            case R.id.action_disconnect:
+                mSPPService.stop();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
 

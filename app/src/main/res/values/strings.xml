@@ -11,7 +11,11 @@
     <string name="connectable">Host device is in discoverable mode.</string>
     <string name="connectable_discoverable">Host device is not in discoverable mode but can still receive connections.</string>
     <string name="not_connected">You are not connected to any device!</string>
-    <string name="title_connected">You are connected to </string>
-    <string name="title_connecting">Attempting connection</string>
-    <string name="title_disconnected">You are not connected</string>
+    <string name="title_connected">State: Connected to  </string>
+    <string name="title_connecting">STATE: Connecting...</string>
+    <string name="title_disconnected">STATE: Not Connected</string>
+    <string name="toast_unable_to_connect">Unable to connect device</string>
+    <string name="toast_connection_lost">Connection was lost</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
 </resources>
