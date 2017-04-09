@@ -71,6 +71,7 @@ public class BTDataTransfer extends AppCompatActivity {
 
         // Create a local instance of SPPService
         mSPPService = new BluetoothSPPService(this, mHandler, mDataView);
+        setupView();
 
         //TODO get rid of this - currently this method tests BT remote device connection
         //testMethod();
@@ -154,10 +155,10 @@ public class BTDataTransfer extends AppCompatActivity {
 
     private void setupView() {
         //initialise array adapter and set it to the listview
-        mDataArrayAdapter = new ArrayAdapter<String>(this, R.layout.data_array_view);
+        mDataArrayAdapter = new ArrayAdapter<String>(this, R.layout.data_msg);
         mDataView.setAdapter(mDataArrayAdapter);
         //Initialise the edit text and make a listener for when user hits the return key when finished typing text
-        mOutEditText.setOnEditorActionListener(mWriteListener);
+        //mOutEditText.setOnEditorActionListener(mWriteListener);
 
         //Initialise the send button with on click listener
         mSendBtn.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +193,7 @@ public class BTDataTransfer extends AppCompatActivity {
                         case BluetoothSPPService.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected) + " " + mConnectedDeviceName);
                             //TODO if the getString doesn't work try getString(int, object)
-                            mDataArrayAdapter.clear();
+                            //mDataArrayAdapter.clear();
                             break;
                         case BluetoothSPPService.STATE_CONNECTING:
                             setStatus(getString(R.string.title_connecting));
@@ -202,6 +203,7 @@ public class BTDataTransfer extends AppCompatActivity {
                             break;
                         case BluetoothSPPService.STATE_NONE:
                             setStatus(getString(R.string.title_disconnected));
+                            mDataArrayAdapter.clear();
                             break;
                     }
                     break;
@@ -209,12 +211,12 @@ public class BTDataTransfer extends AppCompatActivity {
                     byte[] writeBuffer = (byte[]) msg.obj;
                     String writeMessage = new String(writeBuffer);
                     //add the message to the listView adapter
-                    mDataArrayAdapter.add("Transmit:  " + writeMessage);
+                    mDataArrayAdapter.add(" Transmit:  " + writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuffer = (byte[]) msg.obj;
                     String readMeassege = new String(readBuffer);
-                    mDataArrayAdapter.add(mConnectedDeviceName + "Receive:  " + readMeassege);
+                    mDataArrayAdapter.add(mConnectedDeviceName + " Receive:  " + readMeassege);
                     break;
                 case Constants.MESSAGE_TOAST:
                     Toast.makeText(getApplicationContext(), msg.getData().getString(Constants.TOAST), Toast.LENGTH_SHORT).show();
@@ -226,17 +228,18 @@ public class BTDataTransfer extends AppCompatActivity {
     /**
      * An action listener for the text out edit text. this listens for return key
      */
-    private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener() {
+    /*private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener() {
 
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
                 String message = v.getText().toString();
+                Log.d(Constants.DEBUG_TAG,"Trying to send: "+message);
                 sendMessage(message);
             }
             return true;
         }
-    };
+    };*/
 
     /**
      * Sends a message from one device to the other
