@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_plot_line"
+        android:title="@string/plot_line" />
+    <item
+        android:id="@+id/action_plot_bar"
+        android:title="@string/plot_bar" />
+    <item
+        android:id="@+id/action_plot_pie"
+        android:title="@string/plot_pie" />
+    <item
+        android:id="@+id/action_plot_multiple"
+        android:title="@string/plot_mulitple" />
+
+
+</menu>
