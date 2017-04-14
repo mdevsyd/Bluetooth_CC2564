@@ -6,6 +6,9 @@
     <item
         android:id="@+id/action_disconnect"
         android:title="@string/disconnect" />
+    <item
+        android:id="@+id/action_plot"
+        android:title="@string/plot" />
 
 
 </menu>

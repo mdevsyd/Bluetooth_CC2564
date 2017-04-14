@@ -329,6 +329,11 @@ public class BTDataTransfer extends AppCompatActivity {
             case R.id.action_disconnect:
                 mSPPService.stop();
                 return true;
+            case R.id.action_plot:
+                // For now, open a new activity to see data plots and options
+                Intent plotIntent = new Intent(BTDataTransfer.this, DataViewerActivity.class);
+                setResult(RESULT_OK);
+                startActivity(plotIntent);
             default:
                 return super.onOptionsItemSelected(item);
         }

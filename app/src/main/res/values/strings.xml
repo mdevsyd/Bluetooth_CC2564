@@ -18,4 +18,11 @@
     <string name="toast_connection_lost">Connection was lost</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
+    <string name="plot">Plot Data</string>
+    <string name="plot_line">Plot Line Graph</string>
+    <string name="plot_bar">Plot Bar Graph</string>
+    <string name="plot_pie">Plot Pie Graph</string>
+    <string name="plot_mulitple">Plot Multiple Graphs</string>
+    <string name="dateandtime">Date and Time</string>
+    <string name="weight">Weight (g)</string>
 </resources>
