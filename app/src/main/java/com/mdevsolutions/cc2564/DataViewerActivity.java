@@ -115,14 +115,9 @@ public class DataViewerActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList mValues) {
             super.onPostExecute(mValues);
 
-            // TODO this currently only generates Line Graph, need a Graph.java class to handle diff types of graphs
-            LineDataSet setOfData = new LineDataSet(mValues, "Weight (g)");
-            List<ILineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(setOfData);
-
-            LineData lineD = new LineData(dataSets);
-            mLineChart.setData(lineD);
-            mLineChart.invalidate();
+            // TODO currently testing with line chart only, test other charts too
+            Graph graph = new Graph();
+            graph.createLineChart(mValues,"This is a label", mLineChart);
 
             // Instanciate adapter and set to listview
             mDataViewerAdapter = new DataViewerAdapter(DataViewerActivity.this, mJsonResponseObj.getData());
