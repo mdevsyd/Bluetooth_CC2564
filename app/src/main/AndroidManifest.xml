@@ -19,7 +19,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".BTDataTransfer" />
-        <activity android:name=".DataPlottingActivity" />
         <activity android:name=".DataViewerActivity"></activity>
     </application>
 
