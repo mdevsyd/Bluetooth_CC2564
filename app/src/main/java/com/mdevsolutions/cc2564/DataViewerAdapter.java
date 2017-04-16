@@ -15,12 +15,12 @@ import java.util.List;
 
 public class DataViewerAdapter extends BaseAdapter{
 
-    private List<JsonResonse.DataBean> mDataItem;
+    private List<JsonResponse.DataBean> mDataItem;
     private Context mContext;
     private LayoutInflater mInflator;
 
     // Constructor
-    public DataViewerAdapter(Context mContext, List<JsonResonse.DataBean> mDataItem) {
+    public DataViewerAdapter(Context mContext, List<JsonResponse.DataBean> mDataItem) {
         this.mContext = mContext;
         this.mDataItem = mDataItem;
     }
@@ -47,7 +47,7 @@ public class DataViewerAdapter extends BaseAdapter{
         View rowView = inflater.inflate(R.layout.data_row, parent,false);
 
         // Create a local reference of the JSON response
-        JsonResonse.DataBean item = (JsonResonse.DataBean) getItem(position);
+        JsonResponse.DataBean item = (JsonResponse.DataBean) getItem(position);
 
         // Obtain reference to the two text fields for data
         TextView dateAndTime = (TextView) rowView.findViewById(R.id.dateTime);
