@@ -27,4 +27,15 @@
     <string name="weight">Weight (g)</string>
     <string name="please_wait">Please wait...</string>
     <string name="http_fail">Error fetching data</string>
+    <string name="view_existing_data">View Existing Data</string>
+    <string name="connect_to_device">Connect to Device</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="api_key_string">Your Key...</string>
+    <string name="go">GO</string>
+    <string name="back">Back</string>
+    <string name="api_dialog_message">Please enter your Key</string>
+    <string name="your_sites">Your Sites:</string>
+    <string name="key">Enter Key:</string>
+
+
 </resources>
