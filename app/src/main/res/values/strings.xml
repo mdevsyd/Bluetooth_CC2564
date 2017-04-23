@@ -36,6 +36,11 @@
     <string name="api_dialog_message">Please enter your Key</string>
     <string name="your_sites">Your Sites:</string>
     <string name="key">Enter Key:</string>
+    <string name="search">Search</string>
+    <string name="serial">Serial:</string>
+    <string name="battery_voltage_v">Battery Voltage (V):</string>
+    <string name="dashboard_for">Dashboard for:</string>
+    <string name="volts">  V</string>
 
 
 </resources>
