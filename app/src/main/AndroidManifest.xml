@@ -23,11 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BTDataTransfer" />
+        <activity android:name=".BTDataTransferActivity" />
         <activity android:name=".DataViewerActivity" />
-        <activity android:name=".UserDataSelectionActivity" />
         <activity android:name=".DeviceListActivity" />
-        <activity android:name=".SiteLandingPageActivity"></activity>
+        <activity android:name=".AmlDashboardActivity" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

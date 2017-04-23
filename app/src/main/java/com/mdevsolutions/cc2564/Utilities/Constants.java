@@ -1,4 +1,4 @@
-package com.mdevsolutions.cc2564;
+package com.mdevsolutions.cc2564.Utilities;
 
 import java.util.UUID;
 
@@ -35,6 +35,9 @@ public class Constants {
     public static final String TOAST = "toast";
     public static final String DEVICE_NAME = "device_name";
 
+    // Only for testing
+    public static final String testUrl = "https://api.ictcommunity.org/v0/Accounts/A3JHBLG1ZBYLK63Q/AML1G204/?channels=Battery%20Voltage%20(V),Battery%20Temperature%20(deg.C)&start=2017-03-01%2009:00:00&end=2017-03-01%2009:30:00";
+    public static final String amlDashboardUrl = "https://api.ictcommunity.org/v0/Accounts/A3JHBLG1ZBYLK63Q/AML1G204/?channels=DateAndTime,Battery%20Voltage%20(V),Temperature_1%20(deg.C),External%20Supply%20Voltage%20(V)&start=2017-04-11%2009:00:00";
 
 
 }

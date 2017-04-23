@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mdevsolutions.cc2564.Utilities.Constants;
+
 import java.util.Set;
 
 public class DeviceListActivity extends AppCompatActivity {
@@ -25,6 +27,7 @@ public class DeviceListActivity extends AppCompatActivity {
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter mPairedDevicesArrayAdapter;
     private ArrayAdapter mNewDevicesArrayAdapter;
+
 
 
     @Override
@@ -158,7 +161,7 @@ public class DeviceListActivity extends AppCompatActivity {
                 //enableHostDiscoverability();
 
                 //create intent including the hardware address
-                Intent commsIntent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
+                Intent commsIntent = new Intent(DeviceListActivity.this, BTDataTransferActivity.class);
                 commsIntent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
                 commsIntent.putExtra(Constants.EXTRA_DEVICE_NAME, name);
                 //set Result, end this activity and start BTDataTransferActivity
@@ -171,7 +174,7 @@ public class DeviceListActivity extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
             }
 
-//            Intent viewDeviceIntent = new Intent(DeviceListActivity.this, BTDataTransfer.class);
+//            Intent viewDeviceIntent = new Intent(DeviceListActivity.this, BTDataTransferActivity.class);
 //            viewDeviceIntent.putExtra(Constants.EXTRA_DEVICE_ADDRESS, address);
 //            viewDeviceIntent.putExtra(Constants.EXTRA_DEVICE_NAME, name);
 //            viewDeviceIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

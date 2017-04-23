@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.mdevsolutions.cc2564.JsonModelData.JsonResponse;
+
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package com.mdevsolutions.cc2564;
+package com.mdevsolutions.cc2564.JsonModelData;
 
 import com.google.gson.annotations.SerializedName;
 

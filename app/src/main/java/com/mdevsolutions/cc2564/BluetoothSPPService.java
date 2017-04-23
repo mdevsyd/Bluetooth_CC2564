@@ -9,15 +9,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.mdevsolutions.cc2564.Utilities.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
-import static android.content.ContentValues.TAG;
-import static com.mdevsolutions.cc2564.Constants.*;
+import static com.mdevsolutions.cc2564.Utilities.Constants.*;
 
 /**
  * This class manages all Bluetooth Connections with

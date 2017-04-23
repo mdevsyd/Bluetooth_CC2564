@@ -13,17 +13,19 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.mdevsolutions.cc2564.JsonModelData.JsonResponse;
+import com.mdevsolutions.cc2564.Utilities.Constants;
+import com.mdevsolutions.cc2564.Utilities.GraphUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import Work.PopupMarker;
 import cz.msebera.android.httpclient.Header;
 
 public class DataViewerActivity extends AppCompatActivity {
@@ -35,6 +37,9 @@ public class DataViewerActivity extends AppCompatActivity {
     String mUrl = "https://api.ictcommunity.org/v0/Accounts/A3JHBLG1ZBYLK63Q/D0000001/?channels=Weight%20(g),DateAndTime";
     Gson mGson;
     AsyncHttpClient mHttpClient;
+    String refDateTime = "";
+    String globalDateTimeRef="";
+
 
     // Graphed data member fields
     private LineChart mLineChart;
@@ -84,28 +89,42 @@ public class DataViewerActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList doInBackground(String... params) {
+
             Log.d(Constants.DEBUG_TAG, "Inside the AsyncTask");
-            // Instance of the http client
+            GraphUtils graph = new GraphUtils();
+            Long convertedTimestamp;
+            Long reducedTimestamp;
+            Long referenceDateTime =0L;
+
+            ArrayList toConvert = new ArrayList();
 
             // Instance of the Gson object
             mGson = new Gson();
 
+            // Obtain reference to the returned JSON string
             String response = params[0];
 
             mJsonResponseObj = mGson.fromJson(response, JsonResponse.class);
             List<JsonResponse.DataBean> jsonBean = mJsonResponseObj.getData();
-            int temp = 0;
 
-            // TODO the following simplifies testing to get 100 entries. Replace with
-            // TODO cont.. for (JsonResponse.DataBean data : jsonBean) {...}
+            // TODO find better way to achieve this
+            for (int i =0; i<1;i++){
+                refDateTime =jsonBean.get(i).getDateAndTime();
+            }
+
+            // TODO the following simplifies testing by reducing amount of entries. Replace with --> for(JsonResponse.DataBean data : jsonBean) {...}
             //for (JsonResponse.DataBean data : jsonBean) {
-            for (int i = 0; i < 100; i++) {
-
-                //Log.d(Constants.DEBUG_TAG, "Weight is:  " + data.get_$WeightG94());
+            for (int i = 0; i < 10; i++) {
+                //String dateTime = jsonBean.get(i).getDateAndTime();
+                convertedTimestamp = graph.convertDateToMs(jsonBean.get(i).getDateAndTime());
+                Log.d(Constants.DEBUG_TAG,"Converted timestamp is : " +convertedTimestamp);
+                //reducedTimestamp = graph.reduceTimestampSize(convertedTimestamp, refDateTime);
+                float dateTimeFloat = Float.parseFloat(String.valueOf(graph.reduceTimestampSize(convertedTimestamp, refDateTime)));
                 float weightFloat = Float.parseFloat(jsonBean.get(i).get_$WeightG94());
-                Entry entry = new Entry(temp, weightFloat);
+                Entry entry = new Entry(dateTimeFloat, weightFloat);
+                Log.d(Constants.DEBUG_TAG, "Entry is : "+ entry);
                 mValues.add(entry);
-                temp++;
+
             }
 
             return mValues;
@@ -116,8 +135,12 @@ public class DataViewerActivity extends AppCompatActivity {
             super.onPostExecute(mValues);
 
             // TODO currently testing with line chart only, test other charts too
-            Graph graph = new Graph();
-            graph.createLineChart(mValues,"This is a label", mLineChart);
+            GraphUtils graph = new GraphUtils();
+            graph.createLineChart(mValues,"This is a label", mLineChart, refDateTime);
+
+           // MyMarkerView myMarkerView= new MyMarkerView(getApplicationContext(), R.layout.custom_marker, graph.convertDateToMs(refDateTime));
+            IMarker marker = new PopupMarker(DataViewerActivity.this, R.layout.custom_marker);
+            mLineChart.setMarker(marker);
 
             // Instanciate adapter and set to listview
             mDataViewerAdapter = new DataViewerAdapter(DataViewerActivity.this, mJsonResponseObj.getData());

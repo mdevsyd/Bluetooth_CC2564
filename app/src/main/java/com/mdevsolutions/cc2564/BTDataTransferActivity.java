@@ -10,12 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +21,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BTDataTransfer extends AppCompatActivity {
+import com.mdevsolutions.cc2564.Utilities.Constants;
+
+public class BTDataTransferActivity extends AppCompatActivity {
 
     private TextView mConnectedDevice;
     private String mConnectedDeviceName = null;
@@ -59,7 +59,7 @@ public class BTDataTransfer extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            Toast.makeText(BTDataTransfer.this, R.string.bt_unaavailble, Toast.LENGTH_LONG).show();
+            Toast.makeText(BTDataTransferActivity.this, R.string.bt_unaavailble, Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -239,11 +239,11 @@ public class BTDataTransfer extends AppCompatActivity {
             }
             return true;
         }
-    };*/
+    };
+     */
 
     /**
      * Sends a message from one device to the other
-     *
      * @param message - the String of text taken from user input
      */
     private void sendMessage(String message) {
@@ -276,8 +276,6 @@ public class BTDataTransfer extends AppCompatActivity {
             return;
         }
         actionBar.setTitle(charSeq);
-        //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        //myToolbar.setTitle(charSeq);
     }
 
     public int getConnectionState() {
@@ -331,7 +329,7 @@ public class BTDataTransfer extends AppCompatActivity {
                 return true;
             case R.id.action_plot:
                 // For now, open a new activity to see data plots and options
-                Intent plotIntent = new Intent(BTDataTransfer.this, DataViewerActivity.class);
+                Intent plotIntent = new Intent(BTDataTransferActivity.this, DataViewerActivity.class);
                 setResult(RESULT_OK);
                 startActivity(plotIntent);
             default:

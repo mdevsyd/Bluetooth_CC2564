@@ -1,7 +1,6 @@
 package com.mdevsolutions.cc2564;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -11,9 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import static android.R.attr.onClick;
-import static android.R.attr.start;
 
 public class OptionSelectActivity extends AppCompatActivity {
 
@@ -29,6 +25,7 @@ public class OptionSelectActivity extends AppCompatActivity {
         mViewDataBtn = (Button) findViewById(R.id.viewDatBtn);
         mConnectDeviceBtn = (Button) findViewById(R.id.connectBtn);
 
+        // If view daat is clicked, open dialog for user to enter key
         mViewDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,17 +33,18 @@ public class OptionSelectActivity extends AppCompatActivity {
             }
         });
 
+        // If Connect is clicked, open device list activity
         mConnectDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent connectBTDeviceIntent = new Intent(OptionSelectActivity.this, DataViewerActivity.class);
+                Intent connectBTDeviceIntent = new Intent(OptionSelectActivity.this, DeviceListActivity.class);
                 startActivity(connectBTDeviceIntent);
             }
         });
     }
 
     /**
-     * Set up the custom dialogue and save the key to mKey variable.
+     * Set up and display the custom dialogue and save the key to mKey variable.
      */
     private void showCustomDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -65,8 +63,8 @@ public class OptionSelectActivity extends AppCompatActivity {
                 key = (EditText) keyDialog.findViewById(R.id.apiKeyEt);
                 mKey = key.getText().toString();
 
-                // Create an intent to start the api activity
-                Intent apiIntent = new Intent(OptionSelectActivity.this, SiteLandingPageActivity.class);
+                // Create an intent to start the api activity when user hits "GO". Send mKey in intent.
+                Intent apiIntent = new Intent(OptionSelectActivity.this, AmlDashboardActivity.class);
                 apiIntent.putExtra("Key", mKey);
                 startActivity(apiIntent);
 

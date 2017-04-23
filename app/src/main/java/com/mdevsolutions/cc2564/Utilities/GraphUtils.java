@@ -1,10 +1,10 @@
-package com.mdevsolutions.cc2564;
+package com.mdevsolutions.cc2564.Utilities;
 
 import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -12,21 +12,32 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Michi on 16/04/2017.
  */
 
-public class Graph {
+public class GraphUtils {
 
-
+/*
     private ArrayList data;
     private String type;
     private String label;
     private String resource;
-    private LineChart lineChart;
+    private LineChart lineChart;*/
+
+    /**
+     * Return current Android System time as dictated by devices current settings.
+     * @return
+     */
+    public Date getCurrentLocalTime(){
+
+        return Calendar.getInstance().getTime();
+    }
 
     public LineChart createLineChart(ArrayList data, String label, LineChart lineChart, String ref){
         LineDataSet setOfData = new LineDataSet(data, ""+label);
@@ -43,6 +54,7 @@ public class Graph {
 
     }
 
+
     private void setupXAxes(LineChart lineChart, String ref) {
         Long reference;
 
@@ -57,8 +69,6 @@ public class Graph {
         HourAxisValueFormatter xAxisFormatter = new HourAxisValueFormatter(reference);
         xAxis.setValueFormatter(xAxisFormatter);
 
-
-
     }
 
     /**
@@ -68,7 +78,7 @@ public class Graph {
      * @return Long of date after processing
      */
     public Long convertDateToMs(String date){
-        java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         Date newDate=null;
         try {
             newDate = formatter.parse(date);
