@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Michi on 22/04/2017.
  */
 
-public class JsonAccount {
+public class JsonAccountModel {
 
 
     /**

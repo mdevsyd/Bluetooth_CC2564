@@ -30,14 +30,7 @@ public class GraphUtils {
     private String resource;
     private LineChart lineChart;*/
 
-    /**
-     * Return current Android System time as dictated by devices current settings.
-     * @return
-     */
-    public Date getCurrentLocalTime(){
 
-        return Calendar.getInstance().getTime();
-    }
 
     public LineChart createLineChart(ArrayList data, String label, LineChart lineChart, String ref){
         LineDataSet setOfData = new LineDataSet(data, ""+label);

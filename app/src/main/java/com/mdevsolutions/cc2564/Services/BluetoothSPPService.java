@@ -1,4 +1,4 @@
-package com.mdevsolutions.cc2564;
+package com.mdevsolutions.cc2564.Services;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.mdevsolutions.cc2564.R;
 import com.mdevsolutions.cc2564.Utilities.Constants;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import static com.mdevsolutions.cc2564.Utilities.Constants.*;
 /**
  * This class manages all Bluetooth Connections with
  * external devices. It has a thread listening for
- * incomming connections, a thread for connecting to devices
+ * incoming connections, a thread for connecting to devices
  * and a thread for transmitting data.
  */
 

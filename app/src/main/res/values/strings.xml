@@ -41,6 +41,7 @@
     <string name="battery_voltage_v">Battery Voltage (V):</string>
     <string name="dashboard_for">Dashboard for:</string>
     <string name="volts">  V</string>
+    <string name="http_error">Not able to fetch data from server, please check url</string>
 
 
 </resources>

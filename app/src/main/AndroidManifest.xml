@@ -16,18 +16,18 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".OptionSelectActivity">
+        <activity android:name=".Activities.OptionSelectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BTDataTransferActivity" />
-        <activity android:name=".DataViewerActivity" />
-        <activity android:name=".DeviceListActivity" />
-        <activity android:name=".AmlDashboardActivity" />
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".Activities.BTDataTransferActivity" />
+        <activity android:name=".Activities.DataViewerActivity" />
+        <activity android:name=".Activities.DeviceListActivity" />
+        <activity android:name=".Activities.AmlDashboardActivity" />
+        <activity android:name=".Activities.SearchActivity"></activity>
     </application>
 
 </manifest>

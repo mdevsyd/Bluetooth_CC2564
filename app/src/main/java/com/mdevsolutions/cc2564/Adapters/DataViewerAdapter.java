@@ -1,4 +1,4 @@
-package com.mdevsolutions.cc2564;
+package com.mdevsolutions.cc2564.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.mdevsolutions.cc2564.JsonModelData.JsonResponse;
+import com.mdevsolutions.cc2564.R;
 
 import java.util.List;
 
