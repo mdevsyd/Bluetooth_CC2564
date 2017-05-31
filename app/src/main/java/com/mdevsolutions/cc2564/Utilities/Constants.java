@@ -1,5 +1,7 @@
 package com.mdevsolutions.cc2564.Utilities;
 
+import android.Manifest;
+
 import java.util.UUID;
 
 /**
@@ -53,4 +55,7 @@ public class Constants {
     public static final String extra_string_ict_no_start_date = "/AML1G204/?channels=DateAndTime,Battery%20Voltage%20(V),Temperature_1%20(deg.C),External%20Supply%20Voltage%20(V)&start=";
 
 
+    // Permission Constants
+    public static final int REQUEST_CODE_ASK_BT_PERMISSIONS = 999;
+    public static String[] PERMISSIONS_BLUETOOTH = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
 }

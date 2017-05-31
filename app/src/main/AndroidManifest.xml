@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -27,7 +29,9 @@
         <activity android:name=".Activities.DataViewerActivity" />
         <activity android:name=".Activities.DeviceListActivity" />
         <activity android:name=".Activities.AmlDashboardActivity" />
-        <activity android:name=".Activities.SearchActivity"></activity>
+        <activity android:name=".Activities.SearchActivity" />
+        <activity android:name=".Activities.TestSearchActivity" />
+        <activity android:name=".Activities.BluetoothAmlDataActivity"></activity>
     </application>
 
 </manifest>
