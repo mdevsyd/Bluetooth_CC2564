@@ -11,4 +11,8 @@
         android:title="@string/plot" />
 
 
+    <item
+        android:id="@+id/test_dashboard"
+        android:title="dashboard test" />
+
 </menu>

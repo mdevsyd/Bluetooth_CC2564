@@ -1,10 +1,15 @@
 package com.mdevsolutions.cc2564.Activities;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,8 +41,7 @@ public class BTDataTransferActivity extends AppCompatActivity {
 
     private String mConnectedDeviceAddress = null;
 
-    //TODO create the SPPService before un commenting the following line
-    private static BluetoothSPPService mSPPService = null;
+    private BluetoothSPPService mSPPService = null;
 
     //Array adapter for the data transfer thread
     private ArrayAdapter<String> mDataArrayAdapter;
@@ -181,7 +185,7 @@ public class BTDataTransferActivity extends AppCompatActivity {
     }
 
     /**
-     * Hndler to handle mesages back from the BluetoothChat Service
+     * Handler to handle messages back from the BluetoothSPP Service
      */
     private final Handler mHandler = new Handler() {
 
@@ -296,9 +300,28 @@ public class BTDataTransferActivity extends AppCompatActivity {
                             .getString(Constants.EXTRA_DEVICE_ADDRESS);
                     // Get the BLuetoothDevice object
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                    // Attempt to connect to the device
-                    mSPPService.connect(device);
+                    mConnectedDeviceAddress = address;
+
+                    // Check for Bluetooth permissions
+                    int hasBluetoothPermissions = ContextCompat.checkSelfPermission(BTDataTransferActivity.this,
+                            Manifest.permission.ACCESS_COARSE_LOCATION);
+
+                    if(hasBluetoothPermissions != PackageManager.PERMISSION_GRANTED){
+                        if(!ActivityCompat.shouldShowRequestPermissionRationale(BTDataTransferActivity.this,
+                                Manifest.permission.ACCESS_COARSE_LOCATION)){
+                            // TODO add message to allow access to BT
+
+                        }
+                        return;
+                    }
+                    ActivityCompat.requestPermissions(BTDataTransferActivity.this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION},
+                            Constants.REQUEST_CODE_ASK_BT_PERMISSIONS);
+                    return;
+
+
                 }
+
+
                 break;
 
             case Constants.REQUEST_ENABLE_BT:
@@ -308,6 +331,21 @@ public class BTDataTransferActivity extends AppCompatActivity {
 
                     // TODO an alert would be better here!
                     finish();
+                }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        switch(requestCode){
+            case Constants.REQUEST_CODE_ASK_BT_PERMISSIONS:
+                // If the request gets cancelled, result[] is empty
+                if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // Attempt to connect to the device
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mConnectedDeviceAddress);
+
+                    mSPPService.connect(device);
                 }
         }
     }
@@ -334,6 +372,11 @@ public class BTDataTransferActivity extends AppCompatActivity {
                 Intent plotIntent = new Intent(BTDataTransferActivity.this, DataViewerActivity.class);
                 setResult(RESULT_OK);
                 startActivity(plotIntent);
+                return true;
+            case R.id.test_dashboard:
+                Intent btAmlDashIntent =  new Intent(BTDataTransferActivity.this, BluetoothAmlDataActivity.class);
+                startActivity(btAmlDashIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

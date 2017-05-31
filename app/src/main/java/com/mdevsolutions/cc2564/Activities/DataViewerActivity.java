@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.mdevsolutions.cc2564.Adapters.DataViewerAdapter;
-import com.mdevsolutions.cc2564.JsonModelData.JsonResponse;
+import Work.JsonResponse;
 import com.mdevsolutions.cc2564.R;
 import com.mdevsolutions.cc2564.Utilities.Constants;
 import com.mdevsolutions.cc2564.Utilities.GraphUtils;

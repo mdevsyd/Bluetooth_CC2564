@@ -38,10 +38,22 @@
     <string name="key">Enter Key:</string>
     <string name="search">Search</string>
     <string name="serial">Serial:</string>
-    <string name="battery_voltage_v">Battery Voltage (V):</string>
+    <string name="battery_voltage_v">Battery Voltage (V)</string>
     <string name="dashboard_for">Dashboard for:</string>
     <string name="volts">  V</string>
     <string name="http_error">Not able to fetch data from server, please check url</string>
+    <string name="url_unrecognised">URL not recognised, please try again</string>
+    <string name="no_sites">There are no sites to display</string>
+    <string name="no_hubs">No HUbs to Display</string>
+    <string name="aml_serial">AML Serial</string>
+    <string name="dashboardTv">Dashboard</string>
+    <string name="latest_upload_tv">Latest Upload:</string>
+    <string name="title_activity_btaml_dashboard">BTAmlDashboardActivity</string>
+    <string name="battery_temperature_deg_c">Battery Temperature (Deg. C)</string>
+    <string name="_0_0v">0.0V</string>
+    <string name="_0">0</string>
+    <string name="date">date...</string>
+    <string name="latest_upload">Latest Upload:</string>
 
 
 </resources>

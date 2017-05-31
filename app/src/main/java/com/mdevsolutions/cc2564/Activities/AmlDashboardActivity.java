@@ -81,7 +81,7 @@ public class AmlDashboardActivity extends AppCompatActivity {
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent searchIntent = new Intent(AmlDashboardActivity.this, SearchActivity.class);
+                Intent searchIntent = new Intent(AmlDashboardActivity.this, TestSearchActivity.class);
                 startActivity(searchIntent);
             }
         });
