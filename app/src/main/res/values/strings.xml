@@ -45,8 +45,8 @@
     <string name="url_unrecognised">URL not recognised, please try again</string>
     <string name="no_sites">There are no sites to display</string>
     <string name="no_hubs">No HUbs to Display</string>
-    <string name="aml_serial">AML Serial</string>
-    <string name="dashboardTv">Dashboard</string>
+    <string name="aml_serial">AML Serial Number:</string>
+    <string name="dashboardTv">Instrument Dashboard</string>
     <string name="latest_upload_tv">Latest Upload:</string>
     <string name="title_activity_btaml_dashboard">BTAmlDashboardActivity</string>
     <string name="battery_temperature_deg_c">Battery Temperature (Deg. C)</string>
@@ -54,6 +54,13 @@
     <string name="_0">0</string>
     <string name="date">date...</string>
     <string name="latest_upload">Latest Upload:</string>
+    <string name="batt_data_error">Error fetching battery data, trying again..</string>
+    <string name="ext_data_error">Error fetching external supply data, trying again..</string>
+    <string name="f0000000">F0000000</string>
+    <string name="unit_name">Unit Name</string>
+    <string name="set_unit_name">Unit Name:</string>
+    <string name="set_unit_comment">Unit Comment:</string>
+    <string name="unit_comment">Unit Comment</string>
 
 
 </resources>

@@ -87,7 +87,6 @@ public class BtLoggerSPPService {
      * Source:
      */
     public synchronized void start() {
-        Log.d(Constants.DEBUG_TAG, "Starting SPPSerive");
 
         //cancel any other threads attempting a connection
         if (mConnectThread != null) {
@@ -111,7 +110,6 @@ public class BtLoggerSPPService {
      * @param device - BT device to connect to
      */
     public synchronized void connect(BluetoothDevice device) {
-        Log.d(DEBUG_TAG, "Connect to: " + device);
 
         // Cancel any thread attempting a connection
         if (mState == STATE_CONNECTING) {
@@ -139,7 +137,6 @@ public class BtLoggerSPPService {
      * @param device - BT device which has successfully been connected
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
-        Log.d(DEBUG_TAG, "Connected");
 
         // Cancel the thread that initiated the connection
         if (mConnectThread != null) {
@@ -173,7 +170,6 @@ public class BtLoggerSPPService {
      * Stop all active threads and update the state
      */
     public synchronized void stop() {
-        Log.d(DEBUG_TAG, "Stop threads");
 
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -246,15 +242,12 @@ public class BtLoggerSPPService {
                     tmp = device.createRfcommSocketToServiceRecord( Constants.SPP_UUID );
                 }
             } catch (Exception e) {
-                Log.d(Constants.DEBUG_TAG,"Socket creation failed");
             }
             mmSocket = tmp;
-            Log.d(DEBUG_TAG, "Connect thread - socket obtained");
         }
 
         public void run() {
 
-            Log.d(DEBUG_TAG, "Starting mConnectThread");
             setName("ConnectThread");
 
             // Cancel discovery because it otherwise slows down the connection.
@@ -292,7 +285,6 @@ public class BtLoggerSPPService {
 
             // Start the connected thread
             connected(mmSocket, mmDevice);
-            Log.d(Constants.DEBUG_TAG,"connected() called, to start connected thread");
         }
 
 
@@ -313,7 +305,6 @@ public class BtLoggerSPPService {
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
-            Log.d(Constants.DEBUG_TAG, "create ConnectedThread");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -331,7 +322,6 @@ public class BtLoggerSPPService {
         }
 
         public void run() {
-            Log.d(Constants.DEBUG_TAG, " run() - starting mConnectedThread");
 
             byte[] buffer = new byte[1024];
             int bytes;
@@ -358,6 +348,7 @@ public class BtLoggerSPPService {
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
+
 
                 // share sent message back to UI activity
                 mHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer)
