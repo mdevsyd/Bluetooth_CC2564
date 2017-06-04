@@ -38,7 +38,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:hint="@string/unit_name"
+                android:hint="@string/dashes"
                 android:textSize="26sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -261,6 +261,17 @@
 
 
     </RelativeLayout>
+
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="65dp"
+        android:layout_marginEnd="65dp"
+        android:id="@+id/testBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/refreshBtn"
+        android:layout_toStartOf="@+id/refreshBtn" />
 
 
 </RelativeLayout>

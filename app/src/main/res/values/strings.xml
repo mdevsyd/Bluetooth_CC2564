@@ -62,6 +62,7 @@
     <string name="set_unit_comment">Unit Comment:</string>
     <string name="unit_comment">Unit Comment</string>
     <string name="dashes">--</string>
+    <string name="live_dialogue_titile">Action required</string>
 
 
 </resources>

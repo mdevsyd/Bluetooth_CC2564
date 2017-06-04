@@ -31,7 +31,8 @@
         <activity android:name=".Activities.AmlDashboardActivity" />
         <activity android:name=".Activities.SearchActivity" />
         <activity android:name=".Activities.TestSearchActivity" />
-        <activity android:name=".Activities.BluetoothAmlDataActivity"></activity>
+        <activity android:name=".Activities.BluetoothAmlDataActivity" />
+        <activity android:name=".Activities.LiveChartActivity"></activity>
     </application>
 
 </manifest>
