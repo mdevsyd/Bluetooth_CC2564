@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,10 +43,9 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
     //String buffer for outgoing messages
     private StringBuffer mOutStringBuffer;
 
-    private TextView mBattVTv, mBattTempTv, mSuppVTv, mSuppCTv, mSerialTv;
+    private TextView mBattVTv, mBattTempTv, mSuppVTv, mSuppCTv, mSerialTv, mCommentTv, mNameTv;
 
-    private Button mTestBtn;
-    private Button mStopLiveBtn;
+    private ImageButton mRefreshBtn;
     private TimerTask mLiveDataTask;
     private Handler mSecHandler;
     private Handler mFiveSecHandler;
@@ -63,11 +62,11 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
         mBattTempTv = (TextView) findViewById(R.id.battTempTv);
         mSuppVTv = (TextView) findViewById(R.id.supplyVTv);
         mSerialTv = (TextView) findViewById(R.id.amlSerialTv);
+        mCommentTv = (TextView) findViewById(R.id.unitCommentTv);
+        mNameTv = (TextView) findViewById(R.id.unitNameTv);
 
-        mTestBtn = (Button) findViewById(R.id.testBtn);
-        mTestBtn.setOnClickListener(this);
-        mStopLiveBtn = (Button) findViewById(R.id.stopLiveBtn);
-        mStopLiveBtn.setOnClickListener(this);
+        mRefreshBtn = (ImageButton) findViewById(R.id.refreshBtn);
+        mRefreshBtn.setOnClickListener(this);
 
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -204,23 +203,34 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
                     Log.d(Constants.DEBUG_TAG, "command is: " + commandStr);
                     switch (commandStr) {
 
+                        // sf7 --> overall unit comment
+                        case "sf7":
+                            String unitName = new String(Arrays.copyOfRange(readBuffer, 3, 29));
+                            mNameTv.setText(unitName);
+                            break;
+
+                        // sd7 --> overall unit comment
+                        case "sd7":
+                            String unitComment = new String(Arrays.copyOfRange(readBuffer, 3, 29));
+                            mNameTv.setText(unitComment);
+                            break;
+
                         // al2 --> 8 bytes = overall unit serial number
                         case "al2":
-                            String serial = new String(Arrays.copyOfRange(readBuffer, 0,9));
-                            Log.d(Constants.DEBUG_TAG, "serial is: " + Arrays.copyOfRange(readBuffer, 0, 9));
+                            String serial = new String(Arrays.copyOfRange(readBuffer, 0, 9));
                             mSerialTv.setText(serial);
                             break;
 
-                            // aw2 --> returns batt voltage and batt temperature
-                            // 2 bytes data: first 4 bytes = battV * 1000, second 4 bytes =  battTemp*10
+                        // aw2 --> returns batt voltage and batt temperature
+                        // 2 bytes data: first 4 bytes = battV * 1000, second 4 bytes =  battTemp*10
                         case "aw2":
                             String battV = new String(Arrays.copyOfRange(readBuffer, 3, 7));
                             String battT = new String(Arrays.copyOfRange(readBuffer, 7, 11));
                             try {
-                                float battVolts = Float.valueOf(battV);
-                                float battTemp = Float.valueOf(battT);
-                                battVolts = battVolts / 1000;
-                                battTemp = battTemp / 10;
+                                float battVolts = Float.valueOf(battV) / 1000;
+                                float battTemp = Float.valueOf(battT) / 10;
+                                /*battVolts = battVolts / 1000;
+                                battTemp = battTemp / 10;*/
                                 Log.d(Constants.DEBUG_TAG, "battV updated: " + battVolts);
                                 mBattVTv.setText(String.valueOf(battVolts));
                                 mBattTempTv.setText(String.valueOf(battTemp));
@@ -322,11 +332,8 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
             // Connect to the BT device
             mBTLoggerSPPService.connect(device);
         } else if (getConnectionState() == BtLoggerSPPService.STATE_CONNECTED) {
-
-            //TODO do I need to stop/start here
             mBTLoggerSPPService.stop();
             mBTLoggerSPPService.start();
-            Toast.makeText(this, "test method = STATE_CONNECTED", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -346,38 +353,16 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
                     break;
                 }
 
-            case R.id.stopLiveBtn:
-                stopLiveBatt();
+            case R.id.refreshBtn:
+                updateBtDashboard();
                 break;
         }
 
     }
 
-    private void stopLiveBatt() {
-        // If timer task is not null, stop the timer
-        if (mLiveDataTask != null) {
-            mTimer.cancel();
-        }
-    }
-
-    private void getUnitSerial() {
-        Log.d(Constants.DEBUG_TAG, "getUnitSerial called");
-        Handler serialHandler = new Handler();
-        serialHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(Constants.DEBUG_TAG,"runnung getUnitSerial");
-                mBTLoggerSPPService.write("AL0".getBytes());
-
-            }
-        });
-    }
-
     private void getLiveData(final byte[] msg) {
-
         mSecHandler = new Handler();
         mTimer = new Timer();
-
 
         mLiveDataTask = new TimerTask() {
             @Override
@@ -397,11 +382,105 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
 
     /**
      * Method to update AML Dashboard widgets over Bluetooth.
-     * Requests are written to the CC2564 once every 5 seconds
-     * using the timer.
+     * Requests are written to the CC2564 TaskTimer schedules.
      */
     public void updateBtDashboard() {
 
+        requestBattDetails();
+        requestExternalSupply();
+        requestSerialNumber();
+        requestUnitName();
+        requestUnitComment();
+    }
+
+    /**
+     * Request the overall unit name set by user after 1 second delay.
+     */
+    private void requestUnitName() {
+        final Handler nameHandler = new Handler();
+        Timer nameTimer = new Timer();
+        TimerTask nameTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                nameHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBTLoggerSPPService.write("SF0".getBytes());
+                    }
+                });
+            }
+        };
+        nameTimer.schedule(nameTimerTask, 1000);
+    }
+
+    /**
+     * Request the overall unit comment set by user after 1 sec delay.
+     */
+    private void requestUnitComment() {
+
+        final Handler commentHandler = new Handler();
+        Timer commentTimer = new Timer();
+        TimerTask commentTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                commentHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBTLoggerSPPService.write("SD0".getBytes());
+                    }
+                });
+            }
+        };
+        commentTimer.schedule(commentTimerTask, 1000);
+    }
+
+    /**
+     * Request serial number from CC2564 after 1 second delay.
+     */
+    private void requestSerialNumber() {
+        final Handler serialHandler = new Handler();
+        Timer serialTimer = new Timer();
+        TimerTask serialTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                serialHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBTLoggerSPPService.write("AL0".getBytes());
+                    }
+                });
+            }
+        };
+        serialTimer.schedule(serialTimerTask, 1000);
+    }
+
+    /**
+     * Request external supply details from CC2564 after 600ms delay
+     * once every 5 seconds.
+     */
+    private void requestExternalSupply() {
+        final Handler extHandler = new Handler();
+        Timer externalTimer = new Timer();
+        TimerTask externalTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                extHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Request external supply voltage
+                        mBTLoggerSPPService.write("AY0".getBytes());
+                    }
+                });
+            }
+        };
+        externalTimer.schedule(externalTimerTask, 600, 5000);
+    }
+
+    /**
+     * Request battery voltage and temperature form CC2564 after 500ms delay
+     * once every 5 seconds.
+     */
+    private void requestBattDetails() {
         mFiveSecHandler = new Handler();
         mTimer = new Timer();
         mLiveDataTask = new TimerTask() {
@@ -421,50 +500,7 @@ public class BluetoothAmlDataActivity extends AppCompatActivity implements View.
         };
 
         mTimer.schedule(mLiveDataTask, 500, 5000);
-
-
-        final Handler extHandler = new Handler();
-        Timer externalTimer = new Timer();
-        TimerTask externalTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                extHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Request external supply voltage
-                        mBTLoggerSPPService.write("AY0".getBytes());
-                    }
-                });
-            }
-        };
-        externalTimer.schedule(externalTimerTask, 600, 5000);
-
-
-        final Handler serialHandler = new Handler();
-        Timer serialTimer = new Timer();
-        TimerTask serialTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                serialHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(Constants.DEBUG_TAG,"running getUnitSerial");
-                        mBTLoggerSPPService.write("AL0".getBytes());
-                        Log.d(Constants.DEBUG_TAG, "getting serial inside serialTimerTask ");
-                    }
-                });
-            }
-        };
-        serialTimer.schedule(serialTimerTask,0,1000);
-
-
-
     }
 
 
-
-
 }
-
-
-

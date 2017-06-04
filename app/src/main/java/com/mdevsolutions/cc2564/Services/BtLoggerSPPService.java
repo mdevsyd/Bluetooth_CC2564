@@ -190,6 +190,7 @@ public class BtLoggerSPPService {
      * @param out - byte to send
      */
     public void write(byte[] out) {
+        Log.d(Constants.DEBUG_TAG, "service --> write: "+ out);
 
         //temp object
         ConnectedThread x;
@@ -347,6 +348,7 @@ public class BtLoggerSPPService {
 
         public void write(byte[] buffer) {
             try {
+                Log.d(Constants.DEBUG_TAG,"service ConnectedThread write: "+buffer);
                 mmOutStream.write(buffer);
 
 

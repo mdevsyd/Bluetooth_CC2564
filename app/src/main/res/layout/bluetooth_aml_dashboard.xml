@@ -61,7 +61,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:hint="@string/unit_comment"
+                android:hint="@string/dashes"
                 android:textSize="26sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -84,7 +84,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:hint="@string/f0000000"
+                android:hint="@string/dashes"
                 android:textSize="26sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -130,19 +130,9 @@
 
     </LinearLayout>
 
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="129dp"
-        android:layout_marginEnd="129dp"
-        android:id="@+id/testBtn" />
+    <ImageButton
 
-    <Button
-        android:text="Stop Live"
+        android:src="@drawable/ic_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -150,7 +140,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="11dp"
         android:layout_marginEnd="11dp"
-        android:id="@+id/stopLiveBtn" />
+        android:id="@+id/refreshBtn" />
 
     <RelativeLayout
         android:layout_width="match_parent"

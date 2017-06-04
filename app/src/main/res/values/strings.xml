@@ -61,6 +61,7 @@
     <string name="set_unit_name">Unit Name:</string>
     <string name="set_unit_comment">Unit Comment:</string>
     <string name="unit_comment">Unit Comment</string>
+    <string name="dashes">--</string>
 
 
 </resources>
